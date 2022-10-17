@@ -8,7 +8,11 @@ import pseudoslam.envs.simulator.jsonReader as jsonReader
 
 import time
 
-map_color= {'uncertain':-101, 'free':0, 'obstacle':100}
+#baseline colour scheme
+#map_color= {'uncertain':-101, 'free':0, 'obstacle':100} 
+
+
+map_color= {'uncertain':0, 'free':255, 'obstacle':0}
 move_choice= {'forward':np.array([1,0]), 'left': np.array([0,1]), 'right': np.array([0,-1])}
 
 class pseudoSlam():
@@ -104,11 +108,13 @@ class pseudoSlam():
         self.is_exploration = (config["mode"] == 0)
         return
 
-    def create_world(self, order=False, padding=10):
+    def create_world(self, order=True, padding=10):
         """ read maps in order if True, else randomly sample"""
         if order:
             map_id = self.map_id_set[0]
             self.map_id_set = np.delete(self.map_id_set, 0)
+            print("map id : "+map_id)
+            
         else:
             map_id = np.random.choice(self.map_id_set)
         input_world, _ = self.json_reader.read_json(map_id)
@@ -233,9 +239,14 @@ class pseudoSlam():
         self.robotPose[2] = np.random.rand() * np.pi * 2
         return self.robotPose
 
-    def reset(self, order=False):
-        self.traj.clear()
-        self.create_world(order)
+    def reset(self, order=True):
+        try: 
+            self.traj.clear()
+            self.create_world(order)
+            
+        except: #stops crashing due to map list ending
+               self.map_id_set = np.loadtxt(os.path.join(os.path.dirname(__file__), "../", self.config['map_id_set']), str)
+               print("map list ended, resetting")
 
         if (self.robotResetRandomPose==1) or (self.robotCrashed(self.robotPose_init)):
             # randomly generate robot start pose where robot is not crashed into obstacle
