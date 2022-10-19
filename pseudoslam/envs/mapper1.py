@@ -2,6 +2,7 @@ import numpy as np
 import cv2, time
 from os import path
 from matplotlib import pyplot as plt
+import time
 
 import gym
 from gym import spaces
@@ -10,7 +11,7 @@ from gym.utils import seeding
 from pseudoslam.envs.simulator.pseudoSlam import pseudoSlam
 
 class RobotExplorationT0(gym.Env):
-    def __init__(self, config_path='image_cleaner.yaml'):
+    def __init__(self, config_path='dataset_config.yaml'):
         if config_path.startswith("/"):
             fullpath = config_path
         else:
@@ -56,7 +57,7 @@ class RobotExplorationT0(gym.Env):
 
         obs = self._get_obs()
         reward = self._compute_reward(crush_flag, action)
-        done = (self.sim.measure_ratio() > 0.99)
+        done = (self.sim.measure_ratio() > 1)
         print("Map completion : " + str(self.sim.measure_ratio()), end='\r')
         info = {'is_success': done}
 
@@ -103,24 +104,24 @@ class RobotExplorationT0(gym.Env):
         state_size_x, state_size_y = int(self.sim.state_size[0]), int(self.sim.state_size[1])
         if rot_y - pad_y < 0:
             observation = cv2.copyMakeBorder(observation, top=pad_y, bottom=0, left=0, right=0,
-                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['uncertain'])
+                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['obstacle'])
             rot_y += pad_y
         if rot_x - pad_x < 0:
             observation = cv2.copyMakeBorder(observation, top=0, bottom=0, left=pad_x, right=0,
-                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['uncertain'])
+                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['obstacle'])
             rot_x += pad_x
         if rot_y + pad_y > observation.shape[0]:
             observation = cv2.copyMakeBorder(observation, top=0, bottom=pad_y, left=0, right=0,
-                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['uncertain'])
+                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['obstacle'])
         if rot_x + pad_x > observation.shape[1]:
             observation = cv2.copyMakeBorder(observation, top=0, bottom=0, left=0, right=pad_x,
-                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['uncertain'])
+                                             borderType=cv2.BORDER_CONSTANT, value=self.sim.map_color['obstacle'])
 
         # Rotate global map and crop the local observation
         local_map = observation[rot_y - pad_y:rot_y + pad_y, rot_x - pad_x:rot_x + pad_x]
         M = cv2.getRotationMatrix2D((pad_y, pad_x), rot_theta, 1)
         dst = cv2.warpAffine(local_map, M, (pad_y*2, pad_x*2), flags=cv2.INTER_NEAREST,
-                             borderMode=cv2.BORDER_CONSTANT, borderValue=self.sim.map_color['uncertain'])
+                             borderMode=cv2.BORDER_CONSTANT, borderValue=self.sim.map_color['obstacle'])
         dst = dst[pad_y - int(state_size_y/2.):pad_y + int(state_size_y/2.),
                   pad_x - int(state_size_x/2.):pad_x + int(state_size_x/2.)]
         dst = dst[:,:,np.newaxis]
@@ -138,14 +139,14 @@ class RobotExplorationT0(gym.Env):
 if __name__ == '__main__':
     env = RobotExplorationT0()
     env.reset()
+    start_time = time.time()
     count = 0
     generation = 0
     epi_cnt = 0
-    epi_max = 1500
+    epi_max = 2000
     epi_list = [0]
     perc = 10
     total_images = 0
-
 
     #10% increments of total episode count
     for i in range (0,10):
@@ -154,14 +155,16 @@ if __name__ == '__main__':
 
 
     while 1:
+
         pose = env.sim.get_pose()
-        plt.figure(1)
+        plt.figure(1, figsize=(2.56,2.56))#figure size 
         plt.clf()
+        
         plt.imshow(env.sim.get_state().copy(), cmap='gray')
         plt.draw()
         plt.axis("off")
         plt.pause(0.00001)
-
+        
         cGraph=plt.gcf()
         #env.render() #POV
         
@@ -171,15 +174,16 @@ if __name__ == '__main__':
         cmd = ['forward', 'left', 'right']
         
         if epi_cnt in epi_list:
-            
             print("\n" + str(perc) + "% episodes used")
             perc = perc + 10
            # print(str(sim.measure_ratio) + "mapped")
         #change episode count 
         if epi_cnt > epi_max or done:
+            finish_time = int(time.time() - start_time) 
             print("\n final episode : " +str(epi_cnt) + "/" +str(epi_max))
-            cGraph.savefig("cleaned_images"+"/image"+str(count)+".png") #save the completed map
+            cGraph.savefig("images/1"+"/image"+str(count)+".png") #save the completed map
             print("Image : " +str(count) + " saved")
+            print("Total sim time : " + str(finish_time) +" seconds")
             epi_cnt = 0
             count +=1
             total_images +=1 
