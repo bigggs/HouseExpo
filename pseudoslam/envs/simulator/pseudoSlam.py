@@ -186,6 +186,7 @@ class pseudoSlam():
                     self.obs_sizeRange[1]= np.random.randint(500,3000)*1.0/10000 *np.min((h,w))
                     self.obs_sizeRange= np.sort(self.obs_sizeRange,axis=0).astype(int)
                     print('obs_sizeRange exceed world shape, now changing to ',self.obs_sizeRange.tolist())
+
                     continue
 
                 # randomly select shape type of obstacle [0: rectangle; 1: ellipse; 2: circle]
@@ -243,6 +244,8 @@ class pseudoSlam():
         try: 
             self.traj.clear()
             self.create_world(order)
+ 
+                
             
         except: #stops crashing due to map list ending
                self.map_id_set = np.loadtxt(os.path.join(os.path.dirname(__file__), "../", self.config['map_id_set']), str)
