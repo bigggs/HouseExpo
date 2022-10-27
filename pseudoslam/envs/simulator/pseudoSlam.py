@@ -130,7 +130,7 @@ class pseudoSlam():
 
         return self.world
 
-    def _map_process(self,input_world, padding=5):
+    def _map_process(self,input_world, padding=10):
         """ process input map into simulator compatible map """
 
         map_gt = np.zeros_like(input_world)
@@ -151,6 +151,7 @@ class pseudoSlam():
         return map_gt
 
     def add_obstacle(self):
+        
         """ Randomly add obstacle to world """
         if self.obstacle_config:
             """ add user defined obstacles """
@@ -182,11 +183,13 @@ class pseudoSlam():
                 # check if obstacle length exceed 45% of world shape, if yes, randomly change obs_sizeRange to 5%~30% of min(h,w)
                 obs_len= np.sqrt(obs_a*obs_a + obs_b*obs_b)*2
                 if (obs_len*2>h*0.9 or obs_len*2>w*0.9):
-                    self.obs_sizeRange[0]= np.random.randint(500,1500)*1.0/10000 *np.min((h,w))
-                    self.obs_sizeRange[1]= np.random.randint(500,3000)*1.0/10000 *np.min((h,w))
-                    self.obs_sizeRange= np.sort(self.obs_sizeRange,axis=0).astype(int)
-                    print('obs_sizeRange exceed world shape, now changing to ',self.obs_sizeRange.tolist())
-
+                    #causes sim to crash
+                    #self.obs_sizeRange[0]= np.random.randint(500,1500)*1.0/10000 *np.min((h,w))
+                    #self.obs_sizeRange[1]= np.random.randint(500,3000)*1.0/10000 *np.min((h,w))
+                    #self.obs_sizeRange= np.sort(self.obs_sizeRange,axis=0).astype(int)
+                    problemFile = str(self.map_id)
+                    print('issue with map ID: ' +problemFile)
+                    
                     continue
 
                 # randomly select shape type of obstacle [0: rectangle; 1: ellipse; 2: circle]
@@ -244,12 +247,16 @@ class pseudoSlam():
         try: 
             self.traj.clear()
             self.create_world(order)
- 
+    
+                    
                 
-            
         except: #stops crashing due to map list ending
-               self.map_id_set = np.loadtxt(os.path.join(os.path.dirname(__file__), "../", self.config['map_id_set']), str)
-               print("map list ended, resetting")
+            #self.map_id_set = np.loadtxt(os.path.join(os.path.dirname(__file__), "../", self.config['map_id_set']), str)
+            print("map list ended, resetting")
+        
+            self.traj.clear()
+            self.create_world(order)
+
 
         if (self.robotResetRandomPose==1) or (self.robotCrashed(self.robotPose_init)):
             # randomly generate robot start pose where robot is not crashed into obstacle
@@ -449,16 +456,16 @@ class pseudoSlam():
         # state= cv2.resize(self.slamMap, self.state_size, interpolation=cv2.INTER_LINEAR)
         state= self.slamMap.copy()
         # draw robot position on state
-        cv2.circle(state, (int(self.robotPose[1]), int(self.robotPose[0])), self.robotRadius, 50, thickness=-1)
+        #cv2.circle(state, (int(self.robotPose[1]), int(self.robotPose[0])), self.robotRadius, 50, thickness=-1)
 
         # draw robot orientation heading on state
-        headRadius = np.ceil(self.robotRadius/3.).astype(np.int)
-        headLen = self.robotRadius + headRadius
+        #headRadius = np.ceil(self.robotRadius/3.).astype(np.int)
+        #headLen = self.robotRadius + headRadius
         # orientPt = util.transform_coord(self.robotPose[0], self.robotPose[1], self.robotPose, np.array([0, headLen, 0]))
         # cv2.circle(state, (orientPt[1],orientPt[2]), headRadius, 50, thickness=-1)
-        head_y = self.robotPose[0] - np.sin(self.robotPose[2]) * headLen
-        head_x = self.robotPose[1] + np.cos(self.robotPose[2]) * headLen
-        cv2.circle(state, (int(head_x), int(head_y)), headRadius, 50, thickness=-1)
+        #head_y = self.robotPose[0] - np.sin(self.robotPose[2]) * headLen
+        #head_x = self.robotPose[1] + np.cos(self.robotPose[2]) * headLen
+        #cv2.circle(state, (int(head_x), int(head_y)), headRadius, 50, thickness=-1)
 
         if not self.is_exploration:
             """Change color for known environment navigation"""
