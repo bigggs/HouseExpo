@@ -188,7 +188,7 @@ if __name__ == '__main__':
             data = data.reshape(cGraph.canvas.get_width_height()[::-1] + (3,))
             im = Image.fromarray(np.uint8(data))
             im = im.resize((256,256)) #crop image
-            im.save("images/HD"+"/image"+str(count)+".png")
+            im.save("images/GM"+"/image"+str(count)+".png")
            #cGraph.savefig("images/HD"+"/image"+str(count)+".png") #save the completed map
             print("Image : " +str(count) + " saved")
             print("Total sim time : " + str(finish_time) +" seconds")

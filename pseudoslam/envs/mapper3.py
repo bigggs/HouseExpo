@@ -13,7 +13,7 @@ from gym.utils import seeding
 from pseudoslam.envs.simulator.pseudoSlam import pseudoSlam
 
 class RobotExplorationT0(gym.Env):
-    def __init__(self, config_path='dataset_config.yaml'):
+    def __init__(self, config_path='dataset_config3.yaml'):
         if config_path.startswith("/"):
             fullpath = config_path
         else:
@@ -59,7 +59,7 @@ class RobotExplorationT0(gym.Env):
 
         obs = self._get_obs()
         reward = self._compute_reward(crush_flag, action)
-        done = (self.sim.measure_ratio() > 1)
+        done = (self.sim.measure_ratio() > 1.0)
         print("Map completion : " + str(self.sim.measure_ratio()), end='\r')
         info = {'is_success': done}
 
@@ -188,7 +188,7 @@ if __name__ == '__main__':
             data = data.reshape(cGraph.canvas.get_width_height()[::-1] + (3,))
             im = Image.fromarray(np.uint8(data))
             im = im.resize((256,256)) #crop image
-            im.save("images/HD"+"/image"+str(count)+".png")
+            im.save("../../Desktop/data/clean2"+"/image"+str(count)+".png")
            #cGraph.savefig("images/HD"+"/image"+str(count)+".png") #save the completed map
             print("Image : " +str(count) + " saved")
             print("Total sim time : " + str(finish_time) +" seconds")

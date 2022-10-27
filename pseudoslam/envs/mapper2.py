@@ -13,7 +13,7 @@ from gym.utils import seeding
 from pseudoslam.envs.simulator.pseudoSlam import pseudoSlam
 
 class RobotExplorationT0(gym.Env):
-    def __init__(self, config_path='dataset_config.yaml'):
+    def __init__(self, config_path='dataset_config2.yaml'):
         if config_path.startswith("/"):
             fullpath = config_path
         else:
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     count = 0
     generation = 0
     epi_cnt = 0
-    epi_max = 2000
+    epi_max = 200
     epi_list = [0]
     perc = 10
     total_images = 0
@@ -180,7 +180,7 @@ if __name__ == '__main__':
             perc = perc + 10
            # print(str(sim.measure_ratio) + "mapped")
         #change episode count 
-        if epi_cnt > epi_max or done:
+        if epi_cnt > epi_max:
             finish_time = int(time.time() - start_time) 
             print("\n final episode : " +str(epi_cnt) + "/" +str(epi_max))
             plt.tight_layout()
@@ -188,8 +188,8 @@ if __name__ == '__main__':
             data = data.reshape(cGraph.canvas.get_width_height()[::-1] + (3,))
             im = Image.fromarray(np.uint8(data))
             im = im.resize((256,256)) #crop image
-            im.save("images/HD"+"/image"+str(count)+".png")
-           #cGraph.savefig("images/HD"+"/image"+str(count)+".png") #save the completed map
+            im.save("images/LD"+"/image"+str(count)+".png")
+           #cGraph.savefig("images/1"+"/image"+str(count)+".png") #save the completed map
             print("Image : " +str(count) + " saved")
             print("Total sim time : " + str(finish_time) +" seconds")
             epi_cnt = 0
