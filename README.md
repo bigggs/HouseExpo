@@ -1,3 +1,25 @@
+Modified simulator for data generation 
+
+Pre built datasets:
+
+LD (Low detail): https://drive.google.com/file/d/1Jxyhy3uUFwv0ATkJiWzYh1AG_Mkoc8EG/view?usp=share_link
+HD (High detail): https://drive.google.com/file/d/1PWuYpdD9unMtOv_UPH4Uwu5nfBJASi9F/view?usp=sharing
+LEAE (Linear Error/Angular Error): https://drive.google.com/file/d/1n2OL_KTWn2_FfrMoExh-6b9_UoNpJbSX/view?usp=sharing
+Ground Truth Labels: https://drive.google.com/file/d/1cxCJRhnYiR-gzgJBaSxS-7obLXOK5_nY/view?usp=sharing
+
+Datasets for GAN models
+CycleGan HD: https://drive.google.com/file/d/1-0cB5h47p4vU_K82Nb_3pzMyfRQv1J3W/view?usp=sharing
+Pix2Pix HD: https://drive.google.com/file/d/1UdtPC-I495hpjkzoelewphNIzpH3LtVn/view?usp=sharing
+
+CycleGan LEAE: https://drive.google.com/file/d/1Jt9mpYiCwSRdqQNiIDB2v4OjekBcvE-i/view?usp=sharing
+Pix2Pix LEAE: https://drive.google.com/file/d/1xv-pVbtRodR8sfDxh_0-Epcf_vTVMkds/view?usp=sharing
+
+
+To start a new data mapping session, to launch the mapper node launch the mapper1.py, make sure the save directory exists, edit the configuration file in envs/config/dataset_config.yaml to change error settings
+
+Instruction from original Repo
+========================================================================================
+
 # HouseExpo Dataset & PseudoSLAM Simulator (IROS2020)
 ![samples](http://www.ee.cuhk.edu.hk/~tgli/TingguangLi_files/collection.png)
 by [Tingguang Li](http://www.ee.cuhk.edu.hk/~tgli/) at Robotics, Perception, and AI Laboratory, The Chinese University of Hong Kong. The paper and video can be found at [Paper](https://arxiv.org/abs/1903.09845), [Video](https://youtu.be/v7XPzj62OfE).
