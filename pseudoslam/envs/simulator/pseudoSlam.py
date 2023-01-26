@@ -373,17 +373,17 @@ class pseudoSlam():
         # self.slamMap[y_coord, x_coord] = self.world[y_coord, x_coord]
 
         """ laser noise """
-        # [y_noise_ind,x_noise_ind, y_coord,x_coord]= self._laser_noise(y_rangeCoordMat,x_rangeCoordMat,y_coord,x_coord,b)
-        # self.slamMap[y_noise_ind,x_noise_ind]= self.world[y_coord,x_coord]
+        [y_noise_ind,x_noise_ind, y_coord,x_coord]= self._laser_noise(y_rangeCoordMat,x_rangeCoordMat,y_coord,x_coord,b)
+        self.slamMap[y_noise_ind,x_noise_ind]= self.world[y_coord,x_coord]
         #
 
         """ slam matching error """
-        # [y_err_ind,x_err_ind, y_coord,x_coord] = self._slam_error(y_coord,x_coord)
-        # self.slamMap[y_err_ind,x_err_ind]= self.world[y_coord,x_coord]
+        [y_err_ind,x_err_ind, y_coord,x_coord] = self._slam_error(y_coord,x_coord)
+        self.slamMap[y_err_ind,x_err_ind]= self.world[y_coord,x_coord]
 
         """ laser noise + slam matching error """
-        [y_all_noise,x_all_noise, y_coord,x_coord]= self._laser_slam_error(y_rangeCoordMat,x_rangeCoordMat,y_coord,x_coord,b)
-        self.slamMap[y_all_noise,x_all_noise]= self.world[y_coord,x_coord]
+        #[y_all_noise,x_all_noise, y_coord,x_coord]= self._laser_slam_error(y_rangeCoordMat,x_rangeCoordMat,y_coord,x_coord,b)
+        #self.slamMap[y_all_noise,x_all_noise]= self.world[y_coord,x_coord]
 
 
         """ dilate/close to fill the holes """
